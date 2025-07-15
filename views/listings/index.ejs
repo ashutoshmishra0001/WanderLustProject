@@ -1,0 +1,195 @@
+<% layout("/layouts/boilerplate") %>
+
+<style>
+  #filters {
+    display: flex;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow-x: auto;
+    scrollbar-width: none; /* Firefox */
+  }
+
+  #filters::-webkit-scrollbar {
+    display: none; /* Chrome, Safari */
+  }
+
+  .filter {
+    text-align: center;
+    margin-right: 2rem;
+    opacity: 0.7;
+    white-space: nowrap;
+  }
+
+  .filter:hover {
+    opacity: 1;
+    cursor: pointer;
+  }
+
+  .filter p {
+    font-size: 0.8rem;
+  }
+
+  .tax-info {
+    display: none;
+  }
+
+  .tax-toggle {
+    border: 1px solid black;
+    border-radius: 1rem;
+    height: 2.45rem;
+    padding: 0.9rem;
+    margin-left: 5rem;
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+  }
+
+  .arrow-btn {
+    z-index: 10;
+    background: white;
+    border: 1px solid #ccc;
+    border-radius: 50%;
+    width: 2.5rem;
+    height: 2.5rem;
+  }
+</style>
+
+<!-- Mobile Dropdown Filter -->
+<div class="d-md-none mb-3">
+  <select class="form-select" onchange="location = this.value;">
+    <option selected disabled>Choose a category</option>
+    <option value="/listings?category=Trending">Trending</option>
+    <option value="/listings?category=Rooms">Rooms</option>
+    <option value="/listings?category=Iconic Cities">Iconic Cities</option>
+    <option value="/listings?category=Mountains">Mountains</option>
+    <option value="/listings?category=Castles">Castles</option>
+    <option value="/listings?category=Amazing Pools">Amazing Pools</option>
+    <option value="/listings?category=Camping">Camping</option>
+    <option value="/listings?category=Farms">Farms</option>
+    <option value="/listings?category=Arctic">Arctic</option>
+  </select>
+</div>
+<!-- Mobile Tax Toggle -->
+<div class="d-md-none mt-3">
+  <div class="tax-toggle mx-2">
+    <div class="form-check-reverse form-switch">
+      <input class="form-check-input" type="checkbox" role="switch" id="mobileTaxToggle">
+      <label class="form-check-label" for="mobileTaxToggle">Display total after Taxes</label>
+    </div>
+  </div>
+</div>
+
+<!-- Desktop Scrollable Filters with Arrows -->
+<div class="position-relative d-none d-md-block">
+  <!-- Left Arrow -->
+  <button class="btn arrow-btn position-absolute start-0 top-50 translate-middle-y"
+    onclick="scrollFilters('left')">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+
+  <!-- Filter Bar -->
+  <div id="filters" class="px-5 py-2">
+    <a href="/listings?category=Trending"
+      class="filter text-dark text-decoration-none <%= category === 'Trending' ? 'fw-bold border-bottom border-dark' : '' %>">
+      <div><i class="fa-solid fa-fire"></i></div>
+      <p>Trending</p>
+    </a>
+    <a href="/listings?category=Rooms"
+      class="filter text-dark text-decoration-none <%= category === 'Rooms' ? 'fw-bold border-bottom border-dark' : '' %>">
+      <div><i class="fa-solid fa-bed"></i></div>
+      <p>Rooms</p>
+    </a>
+    <a href="/listings?category=Iconic Cities"
+      class="filter text-dark text-decoration-none <%= category === 'Iconic Cities' ? 'fw-bold border-bottom border-dark' : '' %>">
+      <div><i class="fa-solid fa-mountain-city"></i></div>
+      <p>Iconic Cities</p>
+    </a>
+    <a href="/listings?category=Mountains"
+      class="filter text-dark text-decoration-none <%= category === 'Mountains' ? 'fw-bold border-bottom border-dark' : '' %>">
+      <div><i class="fa-solid fa-mountain"></i></div>
+      <p>Mountains</p>
+    </a>
+    <a href="/listings?category=Castles"
+      class="filter text-dark text-decoration-none <%= category === 'Castles' ? 'fw-bold border-bottom border-dark' : '' %>">
+      <div><i class="fa-brands fa-fort-awesome"></i></div>
+      <p>Castles</p>
+    </a>
+    <a href="/listings?category=Amazing Pools"
+      class="filter text-dark text-decoration-none <%= category === 'Amazing Pools' ? 'fw-bold border-bottom border-dark' : '' %>">
+      <div><i class="fa-solid fa-person-swimming"></i></div>
+      <p>Amazing Pools</p>
+    </a>
+    <a href="/listings?category=Camping"
+      class="filter text-dark text-decoration-none <%= category === 'Camping' ? 'fw-bold border-bottom border-dark' : '' %>">
+      <div><i class="fa-solid fa-campground"></i></div>
+      <p>Camping</p>
+    </a>
+    <a href="/listings?category=Farms"
+      class="filter text-dark text-decoration-none <%= category === 'Farms' ? 'fw-bold border-bottom border-dark' : '' %>">
+      <div><i class="fa-solid fa-cow"></i></div>
+      <p>Farms</p>
+    </a>
+    <a href="/listings?category=Arctic"
+      class="filter text-dark text-decoration-none <%= category === 'Arctic' ? 'fw-bold border-bottom border-dark' : '' %>">
+      <div><i class="fa-regular fa-snowflake"></i></div>
+      <p>Arctic</p>
+    </a>
+<!-- Right Arrow -->
+  <button class="btn arrow-btn position-absolute end-0 top-50 translate-middle-y"
+    onclick="scrollFilters('right')">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+    <div class="tax-toggle ms-auto">
+      <div class="form-check-reverse form-switch">
+        <input class="form-check-input" type="checkbox" role="switch" id="flexSwitchCheckDefault">
+        <label class="form-check-label" for="flexSwitchCheckDefault">Display total after Taxes</label>
+      </div>
+    </div>
+  </div>
+
+  
+</div>
+
+<!-- Listings Grid -->
+<div class="row row-cols-lg-3 row-cols-md-2 row-cols-sm-1 mt-3">
+  <% for(let listing of allListings){ %>
+  <a href="/listings/<%= listing._id %>" class="listing-link">
+    <div class="card col listing-card">
+      <img src="<%= listing.image.url %>" class="card-img-top" alt="listing_image" style="height: 20rem" />
+      <div class="card-img-overlay"></div>
+      <div class="card-body">
+        <p class="card-text">
+          <b><%= listing.title %></b><br />
+          &#8377; <%= listing.price.toLocaleString("en-IN") %> /night
+          <i class="tax-info">&nbsp;&nbsp; + 18% GST</i>
+        </p>
+      </div>
+    </div>
+  </a>
+  <% } %>
+</div>
+
+<!-- JS: Tax Toggle + Scroll Arrows -->
+<script>
+ // Tax toggle for both desktop and mobile
+  const toggles = document.querySelectorAll("#flexSwitchCheckDefault, #mobileTaxToggle");
+
+  toggles.forEach(toggle => {
+    toggle.addEventListener("change", () => {
+      const taxInfo = document.getElementsByClassName("tax-info");
+      for (let info of taxInfo) {
+        info.style.display = info.style.display !== "inline" ? "inline" : "none";
+      }
+    });
+  });
+
+  // Scroll arrow logic
+  function scrollFilters(direction) {
+    const filters = document.getElementById("filters");
+    const scrollAmount = 150;
+    filters.scrollBy({
+      left: direction === "left" ? -scrollAmount : scrollAmount,
+      behavior: "smooth"
+    });
+  }
+</script>
