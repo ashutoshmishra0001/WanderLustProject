@@ -128,7 +128,15 @@
     <h5 class="card-title">@<%= review.author.username %></h5>
 
     <div class="d-flex flex-column align-items-center align-items-md-start">
-      <p class="starability-result mb-1 w-100" data-rating="<%= review.rating %>"></p>
+      <div>
+  <% for (let i = 1; i <= 5; i++) { %>
+    <% if (i <= review.rating) { %>
+      <i class="fas fa-star text-warning"></i>
+    <% } else { %>
+      <i class="far fa-star text-secondary"></i>
+    <% } %>
+  <% } %>
+</div>
       <p class="card-text mb-0 text-break"><%= review.comment %></p>
     </div>
 
